@@ -7,8 +7,30 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <!-- Auth Screen -->
+    <div id="auth-container" class="container">
         <h1>Yapılacaklar Listesi</h1>
+        <div id="auth-message" class="auth-message hidden"></div>
+        <form id="login-form">
+            <input type="email" id="auth-email" placeholder="E-posta" required>
+            <input type="password" id="auth-password" placeholder="Şifre (min 6 karakter)" required minlength="6">
+            <button type="submit" id="auth-submit-btn">Giriş Yap</button>
+        </form>
+        <p class="auth-toggle">
+            <span id="auth-toggle-text">Hesabınız yok mu?</span>
+            <a href="#" id="auth-toggle-link">Kayıt Ol</a>
+        </p>
+    </div>
+
+    <!-- App Screen -->
+    <div id="app-container" class="container hidden">
+        <div class="app-header">
+            <h1>Yapılacaklar Listesi</h1>
+            <div class="user-bar">
+                <span id="user-email"></span>
+                <button id="logout-btn">Çıkış</button>
+            </div>
+        </div>
         <form id="todo-form">
             <input type="text" id="todo-input" placeholder="Yeni görev ekle..." autocomplete="off">
             <button type="submit">Ekle</button>
