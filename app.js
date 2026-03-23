@@ -5,6 +5,10 @@ const AUTH_URL = `${SUPABASE_URL}/auth/v1`;
 
 let accessToken = null;
 let currentUser = null;
+let todos = [];
+
+// DOM references (set after DOMContentLoaded)
+let userEmailEl, logoutBtn, form, input, list, footer, countEl, clearBtn, loading;
 
 function apiHeaders() {
     return {
@@ -14,21 +18,6 @@ function apiHeaders() {
         "Prefer": "return=representation"
     };
 }
-
-// DOM
-const userEmailEl = document.getElementById("user-email");
-const logoutBtn = document.getElementById("logout-btn");
-const form = document.getElementById("todo-form");
-const input = document.getElementById("todo-input");
-const list = document.getElementById("todo-list");
-const footer = document.getElementById("footer");
-const countEl = document.getElementById("count");
-const clearBtn = document.getElementById("clear-completed");
-const loading = document.getElementById("loading");
-
-let todos = [];
-
-// --- Session ---
 
 function goToLogin() {
     localStorage.removeItem("sb_session");
@@ -41,7 +30,6 @@ async function initSession() {
 
     const session = JSON.parse(stored);
 
-    // Refresh the token
     try {
         const res = await fetch(`${AUTH_URL}/token?grant_type=refresh_token`, {
             method: "POST",
@@ -67,14 +55,6 @@ async function initSession() {
         return false;
     }
 }
-
-// --- Logout ---
-logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem("sb_session");
-    window.location.href = "index.html";
-});
-
-// --- Todos ---
 
 async function fetchTodos() {
     const res = await fetch(`${REST_URL}/todos?select=*&order=created_at.asc`, { headers: apiHeaders() });
@@ -156,14 +136,6 @@ function render() {
     footer.classList.toggle("hidden", todos.length === 0);
 }
 
-form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const text = input.value.trim();
-    if (!text) return;
-    input.value = "";
-    await addTodo(text);
-});
-
 function startEdit(li, i) {
     li.classList.add("editing");
     const editInput = document.createElement("input");
@@ -195,15 +167,38 @@ function startEdit(li, i) {
     editInput.select();
 }
 
-clearBtn.addEventListener("click", async () => {
-    const completed = todos.filter((t) => t.done);
-    todos = todos.filter((t) => !t.done);
-    render();
-    await Promise.all(completed.map((t) => deleteTodo(t.id)));
-});
+// --- Init after DOM ready ---
+document.addEventListener("DOMContentLoaded", async () => {
+    userEmailEl = document.getElementById("user-email");
+    logoutBtn = document.getElementById("logout-btn");
+    form = document.getElementById("todo-form");
+    input = document.getElementById("todo-input");
+    list = document.getElementById("todo-list");
+    footer = document.getElementById("footer");
+    countEl = document.getElementById("count");
+    clearBtn = document.getElementById("clear-completed");
+    loading = document.getElementById("loading");
 
-// --- Init ---
-(async function init() {
+    logoutBtn.addEventListener("click", () => {
+        localStorage.removeItem("sb_session");
+        window.location.href = "index.html";
+    });
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = "";
+        await addTodo(text);
+    });
+
+    clearBtn.addEventListener("click", async () => {
+        const completed = todos.filter((t) => t.done);
+        todos = todos.filter((t) => !t.done);
+        render();
+        await Promise.all(completed.map((t) => deleteTodo(t.id)));
+    });
+
     const ok = await initSession();
     if (ok) await fetchTodos();
-})();
+});
