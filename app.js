@@ -1,3 +1,13 @@
+const SUPABASE_URL = "https://exsrwwtzfgxxhzpszsqv.supabase.co/rest/v1";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4c3J3d3R6Zmd4eGh6cHN6c3F2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyNTIxNTgsImV4cCI6MjA4OTgyODE1OH0.yN0WSvd45S9L0Ay1b9FLwWIlTwRWmq9d7J74-DNouu4";
+
+const headers = {
+    "apikey": SUPABASE_KEY,
+    "Authorization": `Bearer ${SUPABASE_KEY}`,
+    "Content-Type": "application/json",
+    "Prefer": "return=representation"
+};
+
 const form = document.getElementById("todo-form");
 const input = document.getElementById("todo-input");
 const list = document.getElementById("todo-list");
@@ -5,10 +15,38 @@ const footer = document.getElementById("footer");
 const countEl = document.getElementById("count");
 const clearBtn = document.getElementById("clear-completed");
 
-let todos = JSON.parse(localStorage.getItem("todos")) || [];
+let todos = [];
 
-function save() {
-    localStorage.setItem("todos", JSON.stringify(todos));
+async function fetchTodos() {
+    const res = await fetch(`${SUPABASE_URL}/todos?select=*&order=created_at.asc`, { headers });
+    todos = await res.json();
+    render();
+}
+
+async function addTodo(text) {
+    const res = await fetch(`${SUPABASE_URL}/todos`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ text, done: false })
+    });
+    const [todo] = await res.json();
+    todos.push(todo);
+    render();
+}
+
+async function updateTodo(id, updates) {
+    await fetch(`${SUPABASE_URL}/todos?id=eq.${id}`, {
+        method: "PATCH",
+        headers,
+        body: JSON.stringify(updates)
+    });
+}
+
+async function deleteTodo(id) {
+    await fetch(`${SUPABASE_URL}/todos?id=eq.${id}`, {
+        method: "DELETE",
+        headers
+    });
 }
 
 function render() {
@@ -21,10 +59,10 @@ function render() {
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = todo.done;
-        checkbox.addEventListener("change", () => {
+        checkbox.addEventListener("change", async () => {
             todos[i].done = checkbox.checked;
-            save();
             render();
+            await updateTodo(todo.id, { done: checkbox.checked });
         });
 
         const span = document.createElement("span");
@@ -39,10 +77,11 @@ function render() {
         const del = document.createElement("button");
         del.className = "delete-btn";
         del.textContent = "\u00d7";
-        del.addEventListener("click", () => {
+        del.addEventListener("click", async () => {
+            const id = todos[i].id;
             todos.splice(i, 1);
-            save();
             render();
+            await deleteTodo(id);
         });
 
         li.append(checkbox, span, editBtn, del);
@@ -54,14 +93,12 @@ function render() {
     footer.classList.toggle("hidden", todos.length === 0);
 }
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const text = input.value.trim();
     if (!text) return;
-    todos.push({ text, done: false });
     input.value = "";
-    save();
-    render();
+    await addTodo(text);
 });
 
 function startEdit(li, i) {
@@ -71,10 +108,15 @@ function startEdit(li, i) {
     editInput.className = "edit-input";
     editInput.value = todos[i].text;
 
-    function finishEdit() {
+    let saved = false;
+    async function finishEdit() {
+        if (saved) return;
+        saved = true;
         const newText = editInput.value.trim();
-        if (newText) todos[i].text = newText;
-        save();
+        if (newText && newText !== todos[i].text) {
+            todos[i].text = newText;
+            await updateTodo(todos[i].id, { text: newText });
+        }
         render();
     }
 
@@ -90,10 +132,11 @@ function startEdit(li, i) {
     editInput.select();
 }
 
-clearBtn.addEventListener("click", () => {
+clearBtn.addEventListener("click", async () => {
+    const completed = todos.filter((t) => t.done);
     todos = todos.filter((t) => !t.done);
-    save();
     render();
+    await Promise.all(completed.map((t) => deleteTodo(t.id)));
 });
 
-render();
+fetchTodos();
