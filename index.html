@@ -3,44 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yapılacaklar Listesi</title>
+    <title>Giriş Yap - Yapılacaklar</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Auth Screen -->
-    <div id="auth-container" class="container">
+    <div class="container auth-container">
+        <div class="auth-icon">&#10003;</div>
         <h1>Yapılacaklar Listesi</h1>
+        <p class="auth-subtitle">Görevlerinizi takip edin</p>
+
         <div id="auth-message" class="auth-message hidden"></div>
-        <form id="login-form">
-            <input type="email" id="auth-email" placeholder="E-posta" required>
-            <input type="password" id="auth-password" placeholder="Şifre (min 6 karakter)" required minlength="6">
-            <button type="submit" id="auth-submit-btn">Giriş Yap</button>
+
+        <form id="auth-form">
+            <div class="input-group">
+                <label for="auth-email">E-posta</label>
+                <input type="email" id="auth-email" placeholder="ornek@mail.com" required>
+            </div>
+            <div class="input-group">
+                <label for="auth-password">Şifre</label>
+                <input type="password" id="auth-password" placeholder="En az 6 karakter" required minlength="6">
+            </div>
+            <button type="submit" id="auth-submit-btn" class="btn-primary">Giriş Yap</button>
         </form>
+
+        <div class="auth-divider"><span>veya</span></div>
+
         <p class="auth-toggle">
             <span id="auth-toggle-text">Hesabınız yok mu?</span>
             <a href="#" id="auth-toggle-link">Kayıt Ol</a>
         </p>
     </div>
 
-    <!-- App Screen -->
-    <div id="app-container" class="container hidden">
-        <div class="app-header">
-            <h1>Yapılacaklar Listesi</h1>
-            <div class="user-bar">
-                <span id="user-email"></span>
-                <button id="logout-btn">Çıkış</button>
-            </div>
-        </div>
-        <form id="todo-form">
-            <input type="text" id="todo-input" placeholder="Yeni görev ekle..." autocomplete="off">
-            <button type="submit">Ekle</button>
-        </form>
-        <ul id="todo-list"></ul>
-        <div id="footer" class="hidden">
-            <span id="count"></span>
-            <button id="clear-completed">Tamamlananları Temizle</button>
-        </div>
-    </div>
-    <script src="app.js"></script>
+    <script src="auth.js"></script>
 </body>
 </html>
