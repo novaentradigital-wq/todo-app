@@ -1,0 +1,177 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f0f2f5;
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px;
+    min-height: 100vh;
+}
+
+.container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    padding: 32px;
+    width: 100%;
+    max-width: 500px;
+    height: fit-content;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 24px;
+    font-size: 1.6rem;
+}
+
+#todo-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+#todo-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#todo-input:focus {
+    border-color: #4a90d9;
+}
+
+#todo-form button {
+    padding: 10px 20px;
+    background: #4a90d9;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#todo-form button:hover {
+    background: #357abd;
+}
+
+#todo-list {
+    list-style: none;
+}
+
+#todo-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+
+#todo-list li:hover {
+    background: #f9f9f9;
+}
+
+#todo-list li.completed span {
+    text-decoration: line-through;
+    color: #999;
+}
+
+#todo-list li input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #4a90d9;
+}
+
+#todo-list li span {
+    flex: 1;
+    font-size: 1rem;
+    color: #333;
+}
+
+#todo-list li .edit-btn {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: color 0.2s, background 0.2s;
+}
+
+#todo-list li .edit-btn:hover {
+    color: #4a90d9;
+    background: #e8f0fe;
+}
+
+#todo-list li.editing {
+    padding: 6px 12px;
+}
+
+#todo-list li .edit-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #4a90d9;
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: none;
+}
+
+#todo-list li .delete-btn {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: color 0.2s, background 0.2s;
+}
+
+#todo-list li .delete-btn:hover {
+    color: #e74c3c;
+    background: #fdecea;
+}
+
+#footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+#footer.hidden {
+    display: none;
+}
+
+#clear-completed {
+    background: none;
+    border: 1px solid #ddd;
+    padding: 6px 12px;
+    border-radius: 6px;
+    color: #888;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+#clear-completed:hover {
+    color: #e74c3c;
+    border-color: #e74c3c;
+}
